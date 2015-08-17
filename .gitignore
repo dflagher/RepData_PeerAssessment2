@@ -1,0 +1,26 @@
+# compiled source
+# ---------------
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so 
+#
+# backup files 
+# ---------------
+*.bak
+*.*~
+#
+# explicit files
+# ---------------
+doc/
+instructions/
+data/
+.Rhistory
+.RData
+*.rds
+scc.*
+*.txt
+*.csv
+*.zip
