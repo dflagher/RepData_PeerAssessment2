@@ -7,6 +7,7 @@
 # initializations
 
 library(lubridate)
+library(dplyr)
 
 # set working_dir variable
 working_dir <- "~/Documents/courses/repdata/RepData_PeerAssessment2"
@@ -17,10 +18,24 @@ setwd(working_dir)
 # read in the data file
 noaa <- read.csv("data/repdata_data_StormData.csv")
 
+# include only events that had fatalities or injuries
+harmful <- noaa %>%
+           filter(FATALITIES > 0 | INJURIES > 0)
+unique(harmful$EVTYPE)
+
+
+# remove the time part of the BGN_DATE field
+noaa$BGN_DATE <- as.Date(noaa$BGN_DATE,"%m/%d/%Y")
 dim(noaa)
 
 tail(noaa)
-head(noaa)
+head(noaa$BGN_DATE)
 head(mdy(noaa$BGN_DATE))
 head(noaa$COUNTYNAME)
-head(noaa$EVTYPE)
+head(noaa$FATALITIES)
+
+count(noaa$BGN_DATE)
+length(noaa$BGN_DATE)
+length(noaa$EVTYPE)
+unique(noaa$EVTYPE)
+colnames(noaa)
