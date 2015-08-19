@@ -21,11 +21,32 @@ noaa <- read.csv("data/repdata_data_StormData.csv")
 # include only events that had fatalities or injuries
 harmful <- noaa %>%
            filter(FATALITIES > 0 | INJURIES > 0)
-unique(harmful$EVTYPE)
 
+a <- noaa %>% filter(FATALITIES > 10)
+b <- noaa %>% filter(INJURIES > 0)
+
+summary(a$FATALITIES)
 
 # remove the time part of the BGN_DATE field
-noaa$BGN_DATE <- as.Date(noaa$BGN_DATE,"%m/%d/%Y")
+harmful$BGN_DATE <- as.Date(harmful$BGN_DATE,"%m/%d/%Y")
+
+x <- harmful %>%
+      filter(BGN_DATE > "2001-01-01")
+
+max(x$BGN_DATE)
+
+head(sort(a$FATALITIES, decreasing=TRUE), n=60L)
+
+sort(unique(a$FATALITIES),decreasing = TRUE)
+
+     max(x$FATALITIES)
+min(x$FATALITIES)
+summary(x$FATALITIES)
+
+unique(a$EVTYPE)
+
+
+
 dim(noaa)
 
 tail(noaa)
