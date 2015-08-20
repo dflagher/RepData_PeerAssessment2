@@ -16,47 +16,45 @@ working_dir <- "~/Documents/courses/repdata/RepData_PeerAssessment2"
 setwd(working_dir)
 
 # read in the data file
-noaa <- read.csv("data/repdata_data_StormData.csv")
+noaa <- read.csv("data/repdata_data_StormData.csv.bz2")
 
 # include only events that had fatalities or injuries
 harmful <- noaa %>%
            filter(FATALITIES > 0 | INJURIES > 0)
 
-a <- noaa %>% filter(FATALITIES > 10)
-b <- noaa %>% filter(INJURIES > 0)
+# only looking at EVTYPE,FATALITIES, and INJURIES
+harmful <- subset(harmful, select = c(EVTYPE,FATALITIES,INJURIES))
 
-summary(a$FATALITIES)
+# --------------------------------------------------------------------
 
-# remove the time part of the BGN_DATE field
-harmful$BGN_DATE <- as.Date(harmful$BGN_DATE,"%m/%d/%Y")
+head(harmful[with(harmful, order(-FATALITIES,-INJURIES)),])
+as.data.frame(table(harmful$EVTYPE))
 
-x <- harmful %>%
-      filter(BGN_DATE > "2001-01-01")
+x<-
+  subset(harmful$EVTYPE, harmful$FATALITIES %in% top20)
 
-max(x$BGN_DATE)
-
-head(sort(a$FATALITIES, decreasing=TRUE), n=60L)
-
-sort(unique(a$FATALITIES),decreasing = TRUE)
-
-     max(x$FATALITIES)
-min(x$FATALITIES)
-summary(x$FATALITIES)
-
-unique(a$EVTYPE)
+top20 <- head(sort(harmful$FATALITIES,decreasing=TRUE),n=20L)
 
 
+dd[with(dd, order(-z, b)), ]
 
-dim(noaa)
+table(harmful$EVTYPE, harmful$FATALITIES > 200)
+summary(harmful)
 
-tail(noaa)
-head(noaa$BGN_DATE)
-head(mdy(noaa$BGN_DATE))
-head(noaa$COUNTYNAME)
-head(noaa$FATALITIES)
+sort(table(harmful$EVTYPE)[,2],decreasing=TRUE)
+x <- as.data.frame(table(harmful$EVTYPE))
+colnames(x)
 
-count(noaa$BGN_DATE)
-length(noaa$BGN_DATE)
-length(noaa$EVTYPE)
-unique(noaa$EVTYPE)
-colnames(noaa)
+head(x[with(x, order(-Freq)), ],20L)
+
+
+[,2]
+t <- table(harmful$EVTYPE)
+
+unique(harmful$EVTYPE)
+
+
+b <- factor(rep(c("A","B","C"), 10))
+table(b)
+b
+

@@ -1,0 +1,16 @@
+---
+title: "Peer Assessment 2 (need title that summarizes!)"
+author: "Shawn"
+date: "08/19/2015"
+output: html_document
+---
+
+## Synopsis
+
+_Describe and summarize the data analysis in less than 10 sentences_
+
+## Data Processing
+
+
+## Results
+
