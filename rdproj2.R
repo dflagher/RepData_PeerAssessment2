@@ -10,7 +10,7 @@
 #library(lubridate)
 #library(dplyr)
 
-# set working_dir
+# set working dir
 #   change to match your computer when running this script
 #
 setwd("~/Documents/courses/repdata/RepData_PeerAssessment2")
@@ -60,14 +60,54 @@ noaa$TOTCROPDMG[which(noaa$CROPDMGEXP == "M")] <-
 noaa$TOTCROPDMG[which(noaa$CROPDMGEXP == "B")] <- 
   noaa$CROPDMG[which(noaa$CROPDMGEXP == "B")] * 1000000000
 
-max()
+# injuries by EVTYPE
+injuries <- aggregate(INJURIES ~ EVTYPE, noaa, sum)
+top10injuries <- head(injuries[with(injuries, order(-INJURIES)), ], n=10L)
+print(top10injuries)
+
+# fatalities by EVTYPE
+fatalities <- aggregate(FATALITIES ~ EVTYPE, noaa, sum)
+top10fatalities <- head(fatalities[with(fatalities, order(-FATALITIES)), ], n=10L)
+print(top10fatalities)
+
+library(ggplot2)
+
+ggplot(data=top10injuries, aes(x=EVTYPE, y=INJURIES)) +
+  geom_bar(colour="black", fill="#DD8888", width=.8, stat="identity") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  xlab("Event Type") + 
+  ylab("Number of Injuries") +
+  ggtitle("Injuries by Event")
+
+ggplot(data=top10fatalities, aes(x=EVTYPE, y=FATALITIES)) +
+  geom_bar(colour="black", fill="#DD8888", width=.8, stat="identity") + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  xlab("Event Type") + 
+  ylab("Number of Fatalities") +
+  ggtitle("Fatalites by Event")
+
+
+# property damage by EVTYPE
+totpropdmg <- aggregate(TOTPROPDMG ~ EVTYPE, noaa, sum)
+# convert to billions for reporting purposes; sum get too large
+totpropdmg$TOTPROPDMG <- round(totpropdmg$TOTPROPDMG/1000000000, digits=1)
+
+kable(head(totpropdmg[with(totpropdmg, order(-TOTPROPDMG)), ], n=10L),
+      row.name= FALSE, col.names = c("Event Type","Cost of Damage"),
+      caption = "Property Damage in Billions of Dollars")
+
+# crop damage by EVTYPE
+totcropdmg <- aggregate(TOTCROPDMG ~ EVTYPE, noaa, sum)
+# convert to billions for reporting purposes; sum get too large
+totcropdmg$TOTCROPDMG <- round(totcropdmg$TOTCROPDMG/1000000000, digits=1)
+
+kable(head(totcropdmg[with(totcropdmg, order(-TOTCROPDMG)), ], n=10L),
+      row.name= FALSE, col.names = c("Event Type","Cost of Damage"),
+      caption = "Crop Damage in Billions of Dollars")
 
 
 
-
-df$n[which(df$m == "h")] <- df$n[which(df$m == "h")] * 100
-
-noaa$TOTPROPDMG 
+# 
 # --------------------------------------------------------------------
 
 # 
@@ -94,20 +134,10 @@ dd[with(dd, order(-z, b)), ]
 table(harmful$EVTYPE, harmful$FATALITIES > 200)
 summary(harmful)
 
-sort(table(harmful$EVTYPE)[,2],decreasing=TRUE)
-x <- as.data.frame(table(harmful$EVTYPE))
-colnames(x)
-
-head(x[with(x, order(-Freq)), ],20L)
 
 
-[,2]
-t <- table(harmful$EVTYPE)
-
-unique(harmful$EVTYPE)
-
-
-b <- factor(rep(c("A","B","C"), 10))
-table(b)
-b
+pl <- lapply(1:11, function(.x) qplot(1:10,rnorm(10), main=paste("plot",.x)))
+ml <- marrangeGrob(pl, nrow=2, ncol=2)
+## interactive use; open new devices
+ml
 
