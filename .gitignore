@@ -16,6 +16,7 @@
 # ---------------
 instructions/
 data/
+PA2_template_cache/
 .Rhistory
 .RData
 *.rds
