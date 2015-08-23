@@ -21,3 +21,10 @@
 1. Do the figure(s) have descriptive captions (i.e. there is a description near the figure of what is happening in the figure)?
 
 1. Does the analysis include description and justification for any data transformations? 
+
+
+https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2FStormData.csv.bz2
+
+https://d396qusza40orc.cloudfront.net/repdata%2Fpeer2_doc%2Fpd01016005curr.pdf
+
+https://d396qusza40orc.cloudfront.net/repdata%2Fpeer2_doc%2FNCDC%20Storm%20Events-FAQ%20Page.pdf

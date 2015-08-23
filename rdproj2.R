@@ -141,3 +141,4 @@ ml <- marrangeGrob(pl, nrow=2, ncol=2)
 ## interactive use; open new devices
 ml
 
+head(sort(table(noaa$EVTYPE),decreasing=TRUE), n=10L)

@@ -1,17 +1,27 @@
----
-title: "Peer Assessment 2 (need title that summarizes!)"
-author: "Shawn"
-date: "08/19/2015"
-output: html_document
----
+# Analysis of NOAA Storm Data to Determine Impact on Population Health and Economic Consequences
 
 ## Synopsis
 
-_Describe and summarize the data analysis in less than 10 sentences_
+The goal of this report is to look at the various event types of NOAA Storm Data and determine which ones have greatest harmful impact to population health and economic consequences. Events are considered across the United States paying no attention to location or time of the year the events occurred. Therefore, focus is on four key categories related to event type: fatalities, injuries, property damage cost, and crop damage cost. Aggregate sums of each are computed to determine the top ten worst events in each category.
 
 ## Data Processing
 
+Data and documentation for this report were downloaded from the course project website. The URLs are listed below. In addition, information from the [NOAA Storm Data](https://www.ncdc.noaa.gov/stormevents/) website was used in determining how to process data; specifically for the calculation of property and crop damage.
+
+* [Data](https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2FStormData.csv.bz2)
+* [Storm Data Documentation](https://d396qusza40orc.cloudfront.net/repdata%2Fpeer2_doc%2Fpd01016005curr.pdf)
+* [Storm Evens FAQ](https://d396qusza40orc.cloudfront.net/repdata%2Fpeer2_doc%2FNCDC%20Storm%20Events-FAQ%20Page.pdf)
+
+
+### Initialization
+
+Before data processing begins, we load needed libraries, set working directory and read in the data.
+
 ```{r}
+# load libraries
+library(ggplot2)
+library(knitr)
+
 # set working directory
 #   change to match your computer when running this script
 setwd("~/Documents/courses/repdata/RepData_PeerAssessment2")
@@ -23,14 +33,28 @@ noaa <- read.csv("data/repdata_data_StormData.csv.bz2",
                  stringsAsFactors = FALSE)
 ```
 
+### Processing
+
+Since focus of this report is limited to harmful impact to population health and economic consequences across the United States, only a subset of the data is needed. The following data columns are use:
+
+* **EVTYPE:** The type of event. Examples: Tornado, Wind, Snow.
+* **FATALITIES:** Number of deaths directly related to the event.
+* **INJURIES:** Number of injuries directly related to the event.
+* **PROPDMG:** Base amount of property damage.
+* **PROPDMGEXP:** Base multiplier for property damage. (0-1: 1; H: 100; K: 1,000; M: 1,000,000; B: 1,000,000,000)
+* **CROPDMG:** Base amount of crop damage.
+* **CROPDMGEXP:** Base multiplier for crop damage. (0-1: 1; H: 100; K: 1,000; M: 1,000,000; B: 1,000,000,000)
+ 
 
 ```{r}
-# only include columns relevent to our questions
+# this R code block is cached for future renders
+
+# only include columns relevant to our questions
 noaa <- subset(noaa, 
                select = c(EVTYPE,FATALITIES,INJURIES,
                           PROPDMG,PROPDMGEXP,CROPDMG,CROPDMGEXP))
 
-# upshift PROPDMGEXP and CROPDMGEXP columns
+# up-shift PROPDMGEXP and CROPDMGEXP columns
 noaa$PROPDMGEXP <- toupper(noaa$PROPDMGEXP)
 noaa$CROPDMGEXP <- toupper(noaa$CROPDMGEXP)
 
@@ -67,13 +91,12 @@ noaa$TOTCROPDMG[which(noaa$CROPDMGEXP == "B")] <-
 
 ## Results
 
-**Event affecting population health**
+### Events affecting population health
 
-The graphs below show the top ten most harmful events with respect to population health. 
+#### Injuries
 
-```{r}
-library(ggplot2)
-```
+A graph of the top ten most harmful events to population based on number of injuries shows that tornadoes cause the most injuries. No other events even come close.
+
 
 ```{r}
 # injuries by EVTYPE
@@ -88,6 +111,11 @@ ggplot(data=top10injuries, aes(x=EVTYPE, y=INJURIES)) +
   ggtitle("Injuries by Event")
 ```
 
+#### Fatalities
+
+Similarly a graph of the top ten most harmful events to population based on number of fatalities shows that tornadoes too cause the most fatalities.
+
+
 ```{r}
 # fatalities by EVTYPE
 fatalities <- aggregate(FATALITIES ~ EVTYPE, noaa, sum)
@@ -98,19 +126,19 @@ ggplot(data=top10fatalities, aes(x=EVTYPE, y=FATALITIES)) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
   xlab("Event Type") + 
   ylab("Number of Fatalities") +
-  ggtitle("Fatalites by Event")
+  ggtitle("Fatalities by Event")
 ```
 
-**Events affecting economic damage to property and crops**
 
-The tables below show economic impact in billions of dollars.
+### Events affecting economic damage to property and crops
 
-```{r}
-library(knitr)
-```
+To determine the impact of economic damage to property and crops, the sum of damages for each event were calculated. The results are displayed as tables sorted descending by total damage in billion of dollars.
 
-**Property Damage**
+#### Property Damage
 
+From the table it is clear that floods cause the most costly damage to property.
+
+ 
 ```{r}
 # property damage by EVTYPE
 totpropdmg <- aggregate(TOTPROPDMG ~ EVTYPE, noaa, sum)
@@ -119,10 +147,14 @@ totpropdmg$TOTPROPDMG <- round(totpropdmg$TOTPROPDMG/1000000000, digits=1)
 
 kable(head(totpropdmg[with(totpropdmg, order(-TOTPROPDMG)), ], n=10L),
       row.name= FALSE, col.names = c("Event Type","Cost of Damage"),
-      caption = "Property Damage in Billions of Dollars")
+      caption = "Property Damage in Billions of Dollars",
+      format = "html",
+      table.attr = "border=\"1\"")
 ```
 
-**Crop Damage**
+#### Crop Damage
+
+Drought is shown to cause the most costly damage to crops.
 
 ```{r}
 # crop damage by EVTYPE
@@ -132,5 +164,7 @@ totcropdmg$TOTCROPDMG <- round(totcropdmg$TOTCROPDMG/1000000000, digits=1)
 
 kable(head(totcropdmg[with(totcropdmg, order(-TOTCROPDMG)), ], n=10L),
       row.name= FALSE, col.names = c("Event Type","Cost of Damage"),
-      caption = "Crop Damage in Billions of Dollars")
+      caption = "Crop Damage in Billions of Dollars",
+      format = "html",
+      table.attr = "border=\"1\"")
 ```
