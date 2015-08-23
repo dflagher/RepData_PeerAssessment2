@@ -168,3 +168,5 @@ kable(head(totcropdmg[with(totcropdmg, order(-TOTCROPDMG)), ], n=10L),
       format = "html",
       table.attr = "border=\"1\"")
 ```
+
+
